@@ -38,7 +38,7 @@ function App() {
           element: <PostJob/>
         },
         {
-          path: 'saved-job',
+          path: 'saved-jobs',
           element: <SavedJobs/>
         },
         {
