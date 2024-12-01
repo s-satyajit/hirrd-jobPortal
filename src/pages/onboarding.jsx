@@ -22,8 +22,8 @@ const Onboarding = () => {
   };
 
   useEffect(() => {
-    if (user.unsafeMetadata?.role)
-      navigate(role === "recruiter" ? "/post-job" : "/jobs");
+    if (user?.unsafeMetadata?.role)
+      navigate(user.unsafeMetadata.role === "recruiter" ? "/post-job" : "/jobs");
   }, [user]);
 
   if (!isLoaded)
@@ -34,7 +34,7 @@ const Onboarding = () => {
       <h2 className="gradient-title font-extrabold text-7xl sm:text-8xl tracking-tighter">
         I am a...
       </h2>
-      <div className="mt-16 grid grid-cols-2  gap-4 w-full md:px-40">
+      <div className="mt-16 grid grid-cols-2 gap-4 w-full md:px-40">
         <Button
           variant="blue"
           className="h-36 text-2xl"

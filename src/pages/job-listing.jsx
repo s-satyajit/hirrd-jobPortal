@@ -1,11 +1,21 @@
-import React from "react";
+import { getJobs } from "@/api/apiJobs";
+import React, { useEffect } from "react";
+import useFetch from "@/hooks/use-fetch";
 
 const JobListing = () => {
-    return (
-        <>
-        Job Listing
-        </>
-    )
-}
+  const {
+    fn: fnJobs,
+    data: dataJobs,
+    loading: loadingJobs,
+  } = useFetch(getJobs, {});
 
-export default JobListing
+//   console.log(dataJobs)
+
+  useEffect(() => {
+    fnJobs();
+  }, [])
+
+  return <>Job Listing</>;
+};
+
+export default JobListing;
