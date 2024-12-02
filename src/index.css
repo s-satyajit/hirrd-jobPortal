@@ -60,8 +60,8 @@
 }
 
 @layer utilities {
-  .gradient{
-    @apply bg-gradient-to-br from-gray-500 via-gray-200 to-white
+  .gradient {
+    @apply bg-gradient-to-br from-gray-500 via-gray-200 to-white;
   }
 
   .gradient-title {
@@ -76,4 +76,10 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.wmde-markdown ul {
+  list-style-type: disc;
+  padding-left: 25px;
+  color: white;
 }
