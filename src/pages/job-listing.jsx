@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/clerk-react";
 import { BarLoader } from "react-spinners";
+import JobCard from "@/components/job-card";
 
 const JobListing = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,10 +40,10 @@ const JobListing = () => {
       )}
 
       {loadingJobs === false && (
-        <div>
+        <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4" >
           {jobs?.length ? (
             jobs.map((job) => {
-              return <span>{job.title}</span>
+              return <span><JobCard key={job.id} job={job} /></span>
             })
           ) : (
             <div>No Jobs Found 😢</div>
