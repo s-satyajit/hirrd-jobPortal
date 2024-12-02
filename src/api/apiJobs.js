@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { application } from "express";
 
 export async function getJobs(token, { location, company_id, searchQuery }) {
   const supabase = await SupabaseClient(token);
@@ -52,5 +53,21 @@ export async function saveJob(token, { alreadySaved }, saveData) {
 
       return data;
   }
+}
 
+export async function getSingleJob(token, {job_id}) {
+  const supabase = await SupabaseClient(token);
+
+  const { data, error } = await supabase
+    .from("jobs")
+    .select(
+      "*, company: companies(name, logo_url), applications: applications(*)"
+    )
+    .eq("id", job_id)
+    .single();
+
+  if (error) {
+    console.error("Error Fetching Company", error);
+    return null
+  }
 }
