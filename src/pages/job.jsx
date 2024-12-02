@@ -1,4 +1,5 @@
 import { getSingleJob, updateHiringStatus } from "@/api/apiJobs";
+import ApplyJobDrawer from "@/components/apply-job";
 import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/clerk-react";
 import {
@@ -109,7 +110,14 @@ const JobPage = () => {
       />
 
       {/* render  applications */}
-      
+      {job?.recruiter_id !== user?.id && (
+        <ApplyJobDrawer
+          job={job}
+          user={user}
+          fetchJob={fnJob}
+          applied={job?.applications?.find((ap) => ap.candidate_id === user.id)}
+        />
+      )}
     </div>
   );
 };

@@ -1,8 +1,7 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { application } from "express";
+import supabaseClient from "@/utils/supabase'"
 
 export async function getJobs(token, { location, company_id, searchQuery }) {
-  const supabase = await SupabaseClient(token);
+  const supabase = await supabaseClient(token);
 
   let query = supabase
     .from("jobs")
@@ -25,7 +24,7 @@ export async function getJobs(token, { location, company_id, searchQuery }) {
 }
 
 export async function saveJob(token, { alreadySaved }, saveData) {
-  const supabase = await SupabaseClient(token);
+  const supabase = await supabaseClient(token);
 
   if(alreadySaved) {
     const {data, error: deleteError} = await supabase
@@ -56,7 +55,7 @@ export async function saveJob(token, { alreadySaved }, saveData) {
 }
 
 export async function getSingleJob(token, {job_id}) {
-  const supabase = await SupabaseClient(token);
+  const supabase = await supabaseClient(token);
 
   const { data, error } = await supabase
     .from("jobs")
@@ -73,7 +72,7 @@ export async function getSingleJob(token, {job_id}) {
 }
 
 export async function updateHiringStatus(token, {job_id}, isOpen) {
-  const supabase = await SupabaseClient(token);
+  const supabase = await supabaseClient(token);
 
   const { data, error } = await supabase
     .from("jobs")
