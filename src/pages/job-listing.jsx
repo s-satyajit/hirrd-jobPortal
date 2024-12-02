@@ -16,9 +16,9 @@ const JobListing = () => {
     data: jobs,
     loading: loadingJobs,
   } = useFetch(getJobs, {
-    searchQuery,
     location,
     company_id,
+    searchQuery,
   });
 
   //   console.log(jobs)
@@ -40,17 +40,24 @@ const JobListing = () => {
       )}
 
       {loadingJobs === false && (
-        <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4" >
+        <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {jobs?.length ? (
             jobs.map((job) => {
-              return <span><JobCard key={job.id} job={job} /></span>
+              return (
+                <span>
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    savedInit={job?.saved?.length > 0}
+                  />
+                </span>
+              );
             })
           ) : (
             <div>No Jobs Found 😢</div>
           )}
         </div>
       )}
-
     </div>
   );
 };
