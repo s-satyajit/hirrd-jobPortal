@@ -1,4 +1,5 @@
 import { getSingleJob, updateHiringStatus } from "@/api/apiJobs";
+import ApplicationCard from "@/components/application-card";
 import ApplyJobDrawer from "@/components/apply-job";
 import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/clerk-react";
@@ -10,6 +11,7 @@ import {
   SelectItem,
 } from "@radix-ui/react-select";
 import MDEditor from "@uiw/react-md-editor";
+import { application } from "express";
 import { Briefcase, DoorClosed, DoorOpen, MapPinIcon } from "lucide-react";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -117,6 +119,17 @@ const JobPage = () => {
           fetchJob={fnJob}
           applied={job?.applications?.find((ap) => ap.candidate_id === user.id)}
         />
+      )}
+
+      {job?.applications?.length > 0 && job?.recruiter_id === user?.id && (
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-bold">Applications</h2>
+          {job?.applications.map((application) => {
+            return (
+              <ApplicationCard key={application.id} application={application} />
+            );
+          })}
+        </div>
       )}
     </div>
   );
