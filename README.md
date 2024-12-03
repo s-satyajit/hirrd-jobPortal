@@ -38,7 +38,7 @@ Hirrd is a cutting-edge job portal designed to bridge the gap between recruiters
 - **Authentication**: [Clerk](https://clerk.dev/)
 - **UI Components**: [ShadCN UI](https://shadcn.dev/)
 - **Validation**: [Zod](https://zod.dev/)
-- **State Management**: React Hooks
+- **State Management**: [React Hooks](https://react.dev/reference/react/hooks)
 
 ## Installation
 
