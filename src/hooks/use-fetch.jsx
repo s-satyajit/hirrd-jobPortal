@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useSession } from "@clerk/clerk-react";
+import { useState } from "react";
 
 const useFetch = (cb, options = {}) => {
   const [data, setData] = useState(undefined);
@@ -26,7 +26,7 @@ const useFetch = (cb, options = {}) => {
     }
   };
 
-  return { fn, data, loading, error };
+  return { data, loading, error, fn };
 };
 
 export default useFetch;

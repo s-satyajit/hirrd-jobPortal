@@ -1,25 +1,26 @@
-import { getSingleJob, updateHiringStatus } from "@/api/apiJobs";
-import ApplicationCard from "@/components/application-card";
-import ApplyJobDrawer from "@/components/apply-job";
-import useFetch from "@/hooks/use-fetch";
+import { useEffect } from "react";
+import { BarLoader } from "react-spinners";
+import MDEditor from "@uiw/react-md-editor";
+import { useParams } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
+import { Briefcase, DoorClosed, DoorOpen, MapPinIcon } from "lucide-react";
+
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
-} from "@radix-ui/react-select";
-import MDEditor from "@uiw/react-md-editor";
-import { application } from "express";
-import { Briefcase, DoorClosed, DoorOpen, MapPinIcon } from "lucide-react";
-import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { BarLoader } from "react-spinners";
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ApplyJobDrawer } from "@/components/apply-job";
+import ApplicationCard from "@/components/application-card";
+
+import useFetch from "@/hooks/use-fetch";
+import { getSingleJob, updateHiringStatus } from "@/api/apiJobs";
 
 const JobPage = () => {
-  const { isLoaded, user } = useUser();
   const { id } = useParams();
+  const { isLoaded, user } = useUser();
 
   const {
     loading: loadingJob,
@@ -28,6 +29,10 @@ const JobPage = () => {
   } = useFetch(getSingleJob, {
     job_id: id,
   });
+
+  useEffect(() => {
+    if (isLoaded) fnJob();
+  }, [isLoaded]);
 
   const { loading: loadingHiringStatus, fn: fnHiringStatus } = useFetch(
     updateHiringStatus,
@@ -40,10 +45,6 @@ const JobPage = () => {
     const isOpen = value === "open";
     fnHiringStatus(isOpen).then(() => fnJob());
   };
-
-  useEffect(() => {
-    if (isLoaded) fnJob();
-  }, [isLoaded]);
 
   if (!isLoaded || loadingJob) {
     return <BarLoader className="mb-4" width={"100%"} color="#36d7b7" />;
@@ -58,12 +59,11 @@ const JobPage = () => {
         <img src={job?.company?.logo_url} className="h-12" alt={job?.title} />
       </div>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between ">
         <div className="flex gap-2">
-          <MapPinIcon />
-          {job?.location}
+          <MapPinIcon /> {job?.location}
         </div>
-        <div className="flex  gap-2">
+        <div className="flex gap-2">
           <Briefcase /> {job?.applications?.length} Applicants
         </div>
         <div className="flex gap-2">
@@ -79,8 +79,6 @@ const JobPage = () => {
         </div>
       </div>
 
-      {/* hiring status */}
-      {loadingHiringStatus && <BarLoader width={"100%"} color="#36d7b7" />}
       {job?.recruiter_id === user?.id && (
         <Select onValueChange={handleStatusChange}>
           <SelectTrigger
@@ -88,7 +86,7 @@ const JobPage = () => {
           >
             <SelectValue
               placeholder={
-                "Hiring Status " + (job?.isOpen ? "(Open)" : "(Closed)")
+                "Hiring Status " + (job?.isOpen ? "( Open )" : "( Closed )")
               }
             />
           </SelectTrigger>
@@ -105,13 +103,10 @@ const JobPage = () => {
       <h2 className="text-2xl sm:text-3xl font-bold">
         What we are looking for
       </h2>
-
       <MDEditor.Markdown
         source={job?.requirements}
-        className="bg-transparent sm:text-lg"
+        className="bg-transparent sm:text-lg" // add global ul styles - tutorial
       />
-
-      {/* render  applications */}
       {job?.recruiter_id !== user?.id && (
         <ApplyJobDrawer
           job={job}
@@ -120,10 +115,10 @@ const JobPage = () => {
           applied={job?.applications?.find((ap) => ap.candidate_id === user.id)}
         />
       )}
-
+      {loadingHiringStatus && <BarLoader width={"100%"} color="#36d7b7" />}
       {job?.applications?.length > 0 && job?.recruiter_id === user?.id && (
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-bold">Applications</h2>
+        <div className="flex flex-col gap-2">
+          <h2 className="font-bold mb-4 text-xl ml-1">Applications</h2>
           {job?.applications.map((application) => {
             return (
               <ApplicationCard key={application.id} application={application} />

@@ -1,91 +1,100 @@
-import { getJobs } from "@/api/apiJobs";
-import React, { useEffect, useState } from "react";
 import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/clerk-react";
+import { State } from "country-state-city";
+import { useEffect, useState } from "react";
 import { BarLoader } from "react-spinners";
+
 import JobCard from "@/components/job-card";
-import { getCompanies } from "@/api/apiCompanies";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectGroup,
-  SelectLabel,
-  SelectItem,
-  SelectContent,
-} from "@radix-ui/react-select";
-import { State } from "country-state-city";
+} from "@/components/ui/select";
+
+import { getCompanies } from "@/api/apiCompanies";
+import { getJobs } from "@/api/apiJobs";
 
 const JobListing = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("");
   const [company_id, setCompany_id] = useState("");
+
   const { isLoaded } = useUser();
 
   const {
-    fn: fnJobs,
-    data: jobs,
+    // loading: loadingCompanies,
+    data: companies,
+    fn: fnCompanies,
+  } = useFetch(getCompanies);
+
+  const {
     loading: loadingJobs,
+    data: jobs,
+    fn: fnJobs,
   } = useFetch(getJobs, {
     location,
     company_id,
     searchQuery,
   });
 
-  const { fn: fnCompanies, data: companies } = useFetch(getCompanies);
-
   useEffect(() => {
-    if (isLoaded) fnCompanies();
+    if (isLoaded) {
+      fnCompanies();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded]);
 
   useEffect(() => {
     if (isLoaded) fnJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, location, company_id, searchQuery]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    let formData = new FormData(e.target);
+
+    const query = formData.get("search-query");
+    if (query) setSearchQuery(query);
+  };
 
   const clearFilters = () => {
     setSearchQuery("");
     setCompany_id("");
     setLocation("");
   };
-  
-  const handleSearch = (e) => {
-    let formData = new FormData(e.target);
-    
-    const query = formData.get("search-query");
-    if (query) setSearchQuery(query);
-  };
-  
+
   if (!isLoaded) {
     return <BarLoader className="mb-4" width={"100%"} color="#36d7b7" />;
   }
 
   return (
-    <div>
+    <div className="">
       <h1 className="gradient-title font-extrabold text-6xl sm:text-7xl text-center pb-8">
         Latest Jobs
       </h1>
-
-      {/* Add filters here */}
-
       <form
         onSubmit={handleSearch}
-        className="h-14 flex w-full gap-2 items-center mb-3"
+        className="h-14 flex flex-row w-full gap-2 items-center mb-3"
       >
         <Input
           type="text"
-          placeholder="Search Jobs by Title..."
+          placeholder="Search Jobs by Title.."
           name="search-query"
-          className="h-full flex-1 px-4 text-md"
+          className="h-full flex-1  px-4 text-md"
         />
         <Button type="submit" className="h-full sm:w-28" variant="blue">
           Search
         </Button>
       </form>
 
-      <div className="flex flex-col sm:flex-row gap-2" >
+      <div className="flex flex-col sm:flex-row gap-2">
         <Select value={location} onValueChange={(value) => setLocation(value)}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger>
             <SelectValue placeholder="Filter by Location" />
           </SelectTrigger>
           <SelectContent>
@@ -97,7 +106,6 @@ const JobListing = () => {
                   </SelectItem>
                 );
               })}
-              ;
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -106,24 +114,27 @@ const JobListing = () => {
           value={company_id}
           onValueChange={(value) => setCompany_id(value)}
         >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by Comany" />
+          <SelectTrigger>
+            <SelectValue placeholder="Filter by Company" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {companies.map(({ name, id }) => {
+              {companies?.map(({ name, id }) => {
                 return (
                   <SelectItem key={name} value={id}>
                     {name}
                   </SelectItem>
                 );
               })}
-              ;
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Button onClick={clearFilters} variant="destructive" className="sm:w-1/2" >
-              Clear Filters
+        <Button
+          className="sm:w-1/2"
+          variant="destructive"
+          onClick={clearFilters}
+        >
+          Clear Filters
         </Button>
       </div>
 
@@ -136,13 +147,11 @@ const JobListing = () => {
           {jobs?.length ? (
             jobs.map((job) => {
               return (
-                <span>
-                  <JobCard
-                    key={job.id}
-                    job={job}
-                    savedInit={job?.saved?.length > 0}
-                  />
-                </span>
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  savedInit={job?.saved?.length > 0}
+                />
               );
             })
           ) : (
