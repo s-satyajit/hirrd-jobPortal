@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from "./pages/landing";
 import JobListing from "./pages/job-listing";
 import JobPage from "./pages/job";
-import MyJob from "./pages/my-job";
+import MyJob from "./pages/my-jobs";
 import Onboarding from "./pages/onboarding";
 import PostJob from "./pages/post-job";
 import SavedJobs from "./pages/saved-job";
