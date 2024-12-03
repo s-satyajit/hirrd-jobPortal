@@ -17,9 +17,6 @@
 - [Components](#components)
 - [Hooks](#hooks)
 - [Contribution Guidelines](#contribution-guidelines)
-- [Deployment](#deployment)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
 
 ## Introduction
 
